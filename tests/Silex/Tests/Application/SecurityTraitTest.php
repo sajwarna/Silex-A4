@@ -36,11 +36,11 @@ class SecurityTraitTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException
-     */
     public function testIsGrantedWithoutTokenThrowsException()
     {
+        $this->expectException(\Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException::class);
+        $this->expectExceptionMessage('The token storage contains no authentication token. One possible reason may be that there is no firewall configured for this URL.');
+
         $app = $this->createApplication();
         $app->get('/', function () { return 'foo'; });
         $app->handle(Request::create('/'));
