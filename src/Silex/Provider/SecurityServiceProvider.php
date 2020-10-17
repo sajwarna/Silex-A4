@@ -11,6 +11,7 @@
 
 namespace Silex\Provider;
 
+use LogicException;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
@@ -42,6 +43,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
+use Symfony\Component\Security\Http\EventListener\DefaultLogoutListener;
 use Symfony\Component\Security\Http\Firewall;
 use Symfony\Component\Security\Http\FirewallMap;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
@@ -58,7 +61,6 @@ use Symfony\Component\Security\Http\EntryPoint\BasicAuthenticationEntryPoint;
 use Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 use Symfony\Component\Security\Http\Logout\SessionLogoutHandler;
-use Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler;
 use Symfony\Component\Security\Http\AccessMap;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
@@ -345,7 +347,14 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
                                 $listener->setRememberMeServices($app['security.remember_me.service.'.$name]);
                             }
                             if ($listener instanceof LogoutListener) {
-                                $listener->addHandler($app['security.remember_me.service.'.$name]);
+                                $handler = $app['security.remember_me.service.'.$name];
+                                $app['dispatcher']->addListener(LogoutEvent::class, function (LogoutEvent $event) use ($handler) {
+                                    if (null === $event->getResponse()) {
+                                        throw new LogicException(sprintf('No response was set for this logout action. Make sure the DefaultLogoutListener or another listener has set the response before "%s" is called.', __CLASS__));
+                                    }
+
+                                    $handler->logout($event->getRequest(), $event->getResponse(), $event->getToken());
+                                });
                             }
                         }
 
@@ -556,9 +565,9 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
             };
         });
 
-        $app['security.authentication.logout_handler._proto'] = $app->protect(function ($name, $options) use ($app) {
+        $app['security.authentication.logout_listener._proto'] = $app->protect(function ($name, $options) use ($app) {
             return function () use ($name, $options, $app) {
-                return new DefaultLogoutSuccessHandler(
+                return new DefaultLogoutListener(
                     $app['security.http_utils'],
                     isset($options['target_url']) ? $options['target_url'] : '/'
                 );
@@ -573,21 +582,30 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
                     str_replace('/', '_', ltrim($tmp, '/'))
                 );
 
-                if (!isset($app['security.authentication.logout_handler.'.$name])) {
-                    $app['security.authentication.logout_handler.'.$name] = $app['security.authentication.logout_handler._proto']($name, $options);
+                if (!isset($app['security.authentication.logout_listener.'.$name])) {
+                    $app['security.authentication.logout_listener.'.$name] = $app['security.authentication.logout_listener._proto']($name, $options);
                 }
+
+                $app['dispatcher']->addSubscriber($app['security.authentication.logout_listener.'.$name]);
 
                 $listener = new LogoutListener(
                     $app['security.token_storage'],
                     $app['security.http_utils'],
-                    $app['security.authentication.logout_handler.'.$name],
+                    $app['dispatcher'],
                     $options,
                     isset($options['with_csrf']) && $options['with_csrf'] && isset($app['csrf.token_manager']) ? $app['csrf.token_manager'] : null
                 );
 
                 $invalidateSession = isset($options['invalidate_session']) ? $options['invalidate_session'] : true;
                 if (true === $invalidateSession && false === $options['stateless']) {
-                    $listener->addHandler(new SessionLogoutHandler());
+                    $handler = new SessionLogoutHandler();
+                    $app['dispatcher']->addListener(LogoutEvent::class, function (LogoutEvent $event) use ($handler) {
+                        if (null === $event->getResponse()) {
+                            throw new LogicException(sprintf('No response was set for this logout action. Make sure the DefaultLogoutListener or another listener has set the response before "%s" is called.', __CLASS__));
+                        }
+
+                        $handler->logout($event->getRequest(), $event->getResponse(), $event->getToken());
+                    });
                 }
 
                 return $listener;

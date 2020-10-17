@@ -18,7 +18,7 @@ use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -49,7 +49,7 @@ class SecurityServiceProviderTest extends WebTestCase
     {
         $app = $this->createApplication('form');
 
-        $client = new Client($app);
+        $client = new HttpKernelBrowser($app);
 
         $client->request('get', '/');
         $this->assertEquals('ANONYMOUS', $client->getResponse()->getContent());
@@ -97,7 +97,7 @@ class SecurityServiceProviderTest extends WebTestCase
     {
         $app = $this->createApplication('http');
 
-        $client = new Client($app);
+        $client = new HttpKernelBrowser($app);
 
         $client->request('get', '/');
         $this->assertEquals(401, $client->getResponse()->getStatusCode());
@@ -124,7 +124,7 @@ class SecurityServiceProviderTest extends WebTestCase
     {
         $app = $this->createApplication('guard');
 
-        $client = new Client($app);
+        $client = new HttpKernelBrowser($app);
 
         $client->request('get', '/');
         $this->assertEquals(401, $client->getResponse()->getStatusCode(), 'The entry point is configured');
@@ -169,7 +169,7 @@ class SecurityServiceProviderTest extends WebTestCase
         $app = $this->createApplication('form');
         $app['security.hide_user_not_found'] = false;
 
-        $client = new Client($app);
+        $client = new HttpKernelBrowser($app);
 
         $client->request('get', '/');
         $this->assertEquals('ANONYMOUS', $client->getResponse()->getContent());
@@ -494,8 +494,8 @@ class SecurityServiceProviderTest extends WebTestCase
 
     private function addGuardAuthentication($app)
     {
-        $app['app.authenticator.token'] = function ($app) {
-            return new SecurityServiceProviderTest\TokenAuthenticator($app);
+        $app['app.authenticator.token'] = function () {
+            return new SecurityServiceProviderTest\TokenAuthenticator();
         };
 
         $app->register(new SecurityServiceProvider(), [
