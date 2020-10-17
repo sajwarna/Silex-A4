@@ -37,7 +37,7 @@
         "symfony/options-resolver": "^5.0",
         "symfony/phpunit-bridge": "^5.0",
         "symfony/process": "^5.0",
-        "symfony/serializer": "^5.0",,
+        "symfony/serializer": "^5.0",
         "symfony/security-bundle": "^5.0",
         "symfony/translation": "^5.0",
         "symfony/twig-bridge": "^5.0",
