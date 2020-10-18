@@ -22,6 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\NativePasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserChecker;
 use Symfony\Component\Security\Core\User\InMemoryUserProvider;
@@ -677,7 +678,8 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
                     $authenticators,
                     $app['security.user_provider.'.$name],
                     $name,
-                    $app['security.user_checker']
+                    $app['security.user_checker'],
+                    new UserPasswordEncoder($app['security.encoder_factory'])
                 );
             };
         });
