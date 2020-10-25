@@ -367,7 +367,8 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
                 $app['security.token_storage'],
                 $app['security.access_manager'],
                 $app['security.access_map'],
-                $app['security.authentication_manager']
+                $app['security.authentication_manager'],
+                $app['security.exception_on_no_token']
             );
         };
 
@@ -692,6 +693,10 @@ class SecurityServiceProvider implements ServiceProviderInterface, EventListener
 
         $app['security.authentication_utils'] = function ($app) {
             return new AuthenticationUtils($app['request_stack']);
+        };
+
+        $app['security.exception_on_no_token'] = function ($app) {
+            return true;
         };
     }
 
