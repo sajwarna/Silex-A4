@@ -44,6 +44,7 @@ class Application extends Container implements HttpKernelInterface, TerminableIn
     const VERSION = '2.3.1-DEV';
 
     const EARLY_EVENT = 512;
+    const SEMIEARLY_EVENT = 128; // Includes session
     const LATE_EVENT = -512;
 
     protected $providers = [];
