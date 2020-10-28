@@ -1,4 +1,4 @@
-**WARNING**: This repository is a fork of `Silex <https://github.com/silexphp/Silex>`_. While the original one is in maintenance mode only and has been declared "end of life" in June 2018, this repository has been put up to date with Symfony 4.x (see branch) and 5.x (master) components.
+**WARNING**: This repository is a fork of `Silex <https://github.com/silexphp/Silex>`_. While the original one is not maintained anymore and has been declared "end of life" in June 2018, this repository has been put up to date with Symfony 4.x (see branch) and 5.x (master) components.
 
 Silex, a simple Web Framework
 =============================
