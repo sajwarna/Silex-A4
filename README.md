@@ -26,12 +26,13 @@ Installation
 
 The recommended way to install Silex is through [Composer](https://getcomposer.org). As this repository is not the main one and there are no releases, is has to be declared as follows in your composer.json:
 
-``` {.sourceCode .json
- "require": {
-     ...
-     "silex/silex": "dev-master",
-     ...
- },}
+``` {.sourceCode .json}
+"require": {
+    ...
+    "silex/silex": "dev-master",
+    ...
+},
+
 "repositories": [
     ...
     {
