@@ -1,8 +1,7 @@
+**WARNING**: This repository is a fork of `Silex <https://github.com/silexphp/Silex>`_. While the original one is in maintenance mode only and has been declared "end of life" in June 2018, this repository has been put up to date with Symfony 4.x (see branch) and 5.x (master) components.
+
 Silex, a simple Web Framework
 =============================
-
-**WARNING**: Silex is in maintenance mode only. Ends of life is set to June
-2018. Read more on `Symfony's blog <https://symfony.com/blog/the-end-of-silex>`_.
 
 Silex is a PHP micro-framework to develop websites based on `Symfony
 components`_:
@@ -21,24 +20,41 @@ components`_:
 
     $app->run();
 
-Silex works with PHP 7.1.3 or later.
+The current master works with PHP 7.2.5 or later, and Symfony 5.x.
 
 Installation
 ------------
 
-The recommended way to install Silex is through `Composer`_:
+The recommended way to install Silex is through `Composer`_.
+As this repository is not the main one and there are no releases, is has to be declared as follows in your composer.json:
+
+.. code-block:: json
+    "require": {
+        ...
+        "silex/silex": "dev-master",
+        ...
+    },
+
+    "repositories": [
+        ...
+        {
+          "type": "vcs",
+          "url": "https://github.com/GregOriol/Silex"
+        },
+        ...
+    ]
+
+Then run:
 
 .. code-block:: bash
 
-    composer require silex/silex "~2.0"
+    composer install
 
-Alternatively, you can download the `silex.zip`_ file and extract it.
 
 More Information
 ----------------
 
-Read the `documentation`_ for more information and `changelog
-<doc/changelog.rst>`_ for upgrading information.
+Read the `documentation`_ for more information.
 
 Tests
 -----
@@ -55,7 +71,9 @@ Support
 
 If you have a configuration problem use the `silex tag`_ on StackOverflow to ask a question.
 
-If you think there is an actual problem in Silex, please `open an issue`_ if there isn't one already created.
+If you think there is an actual problem in Silex, please make a pull request.
+
+Please note that this repository is mainly maintained for personnal use, so no support per se will be provided, but contributions are welcome!
 
 License
 -------
@@ -65,7 +83,5 @@ Silex is licensed under the MIT license.
 .. _Symfony components: https://symfony.com
 .. _Composer:           https://getcomposer.org
 .. _PHPUnit:            https://phpunit.de
-.. _silex.zip:          https://silex.symfony.com/download
 .. _documentation:      https://silex.symfony.com/documentation
 .. _silex tag:          https://stackoverflow.com/questions/tagged/silex
-.. _open an issue:      https://github.com/silexphp/Silex/issues/new
