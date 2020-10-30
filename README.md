@@ -29,7 +29,7 @@ The recommended way to install Silex is through [Composer](https://getcomposer.o
 ``` {.sourceCode .json}
 "require": {
     ...
-    "silex/silex": "dev-master",
+    "silex/silex": "2.5.x-dev",
     ...
 },
 
