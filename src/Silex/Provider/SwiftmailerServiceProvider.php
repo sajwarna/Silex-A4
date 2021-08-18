@@ -17,7 +17,6 @@ use Silex\Api\EventListenerProviderInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 /**
  * Swiftmailer Provider.
@@ -122,7 +121,7 @@ class SwiftmailerServiceProvider implements ServiceProviderInterface, EventListe
 
     public function subscribe(Container $app, EventDispatcherInterface $dispatcher)
     {
-        // Event has no typehint as it can be either a PostResponseEvent or a ConsoleTerminateEvent
+        // Event has no typehint as it can be either a TerminateEvent or a ConsoleTerminateEvent
         $onTerminate = function ($event) use ($app) {
             // To speed things up (by avoiding Swift Mailer initialization), flush
             // messages only if our mailer has been created (potentially used)
