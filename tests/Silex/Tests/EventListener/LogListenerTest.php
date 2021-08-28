@@ -48,7 +48,7 @@ class LogListenerTest extends TestCase
 
         $dispatcher->dispatch(new RequestEvent($kernel, Request::create('/subrequest'), HttpKernelInterface::SUB_REQUEST), KernelEvents::REQUEST);
 
-        $dispatcher->dispatch(new RequestEvent($kernel, Request::create('/foo'), HttpKernelInterface::MASTER_REQUEST), KernelEvents::REQUEST);
+        $dispatcher->dispatch(new RequestEvent($kernel, Request::create('/foo'), HttpKernelInterface::MAIN_REQUEST), KernelEvents::REQUEST);
     }
 
     public function testResponseListener()
@@ -67,7 +67,7 @@ class LogListenerTest extends TestCase
 
         $dispatcher->dispatch(new ResponseEvent($kernel, Request::create('/foo'), HttpKernelInterface::SUB_REQUEST, new Response('subrequest', 200)), KernelEvents::RESPONSE);
 
-        $dispatcher->dispatch(new ResponseEvent($kernel, Request::create('/foo'), HttpKernelInterface::MASTER_REQUEST, new Response('bar', 301)), KernelEvents::RESPONSE);
+        $dispatcher->dispatch(new ResponseEvent($kernel, Request::create('/foo'), HttpKernelInterface::MAIN_REQUEST, new Response('bar', 301)), KernelEvents::RESPONSE);
     }
 
     public function testExceptionListener()
