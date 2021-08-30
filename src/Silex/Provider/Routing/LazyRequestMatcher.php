@@ -33,7 +33,7 @@ class LazyRequestMatcher implements RequestMatcherInterface
     /**
      * Returns the corresponding RequestMatcherInterface instance.
      *
-     * @return UrlMatcherInterface
+     * @return RequestMatcherInterface
      */
     public function getRequestMatcher()
     {
