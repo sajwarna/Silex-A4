@@ -13,7 +13,6 @@ namespace Silex\Provider\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 /**
  * Implements a lazy UrlMatcher.
